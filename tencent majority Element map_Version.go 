@@ -1,0 +1,35 @@
+
+func majorityElement(nums []int) int {
+	m := make(map[int]int)
+	for i := 0; i < len(nums); i++ {
+		m[nums[i]]++
+	}
+	max := 0
+	var ans int
+
+	for k, v := range m {
+		if v > max {
+			max = v
+			ans = k
+		}
+	}
+
+	return ans
+
+func majorityElement(nums []int) int {
+	m := make(map[int]int)
+	for i := 0; i < len(nums); i++ {
+		m[nums[i]]++
+	}
+	max := 0
+	var ans int
+
+	for k, v := range m {
+		if v > max {
+			max = v
+			ans = k
+		}
+	}
+
+	return ans
+}}
