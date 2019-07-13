@@ -30,24 +30,5 @@ func (s NyString) Swap(i, j int) {
 	s[i], s[j] = s[j], s[i]
 }
 func (s NyString) Less(i, j int) bool {
-	if len(s[i]) == len(s[j]) {
-		return s[i] < s[j]
-	}
-	ii := 0
-	ji := 0
-
-	for {
-		if ii == len(s[i]) || ji == len(s[j]) {
-			return s[i]+s[j]<s[j]+s[i]
-		}
-		
-		if s[i][ii] < s[j][ji] {
-			return true
-		} else if s[i][ii] == s[j][ji] {
-			ii++
-			ji++
-		} else {
-			return false
-		}
-	}
+    return s[i]+s[j]<s[j]+s[i]
 }
