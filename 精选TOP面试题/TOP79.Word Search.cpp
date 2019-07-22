@@ -1,8 +1,3 @@
-/*
-真的是日了狗了 提交有几个样例不通过，拿不通过的case放本地跑没问题。
-放leetcode控制台跑也没问题 
-*/
-
 int dirx[4] = {-1, 1, 0, 0};
 int diry[4] = {0, 0, -1, 1};
 set<pair<int, int> > s;
@@ -27,11 +22,14 @@ class Solution {
 public:
 
     bool exist(vector<vector<char>> &board, string word) {
+        s.clear();
         for (int i = 0; i < board.size(); i++) {
             for (int j = 0; j < board[0].size(); j++) {
+                s.insert(make_pair(i, j));
                 if (dfs(board, i, j, word, 0)) {
                     return true;
                 }
+                s.erase(make_pair(i,j));
             }
         }
         return false;
