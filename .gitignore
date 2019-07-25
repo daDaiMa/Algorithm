@@ -202,3 +202,4 @@ Temporary Items
 
 # End of https://www.gitignore.io/api/c,go,c++,macos,jetbrains
 push.sh
+*push.sh
