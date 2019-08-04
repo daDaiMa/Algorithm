@@ -13,86 +13,60 @@ public:
 
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
-        queue<TreeNode*>q;
-        queue<TreeNode*>next;
-        q.push(root);
-        bool null=true;
         string ans="[";
-        while(!q.empty()){
-            auto tmp = q.front();
-            q.pop();
-            if(tmp==NULL)ans+="null,";
-            else ans+=to_string(tmp->val)+",";
-            if(!tmp){
-                next.push(NULL);
-                next.push(NULL);
-            }else{
-                next.push(tmp->left);
-                next.push(tmp->right);
-                if(tmp->left!=NULL||tmp->right!=NULL)null=false;
-            }
-            if(q.empty()&&!null){
-                swap(q,next);
-                null=true;
-            }
-        }
-
-        
-        // 剔除末尾连续的null
-        int i;
-        for(i=ans.size()-1;i>=0&&(ans[i]<'0'||ans[i]>'9')&&ans[i]!='[';i--);
-        ans=ans.substr(0,i+1);
-        ans+="]";
-        cout<<ans<<endl;
+        TreeToString(root,ans); 
+        ans[ans.length()-1]=']';
         return ans;
     }
-
+    void TreeToString(TreeNode*root,string&out){
+        if(root==NULL){
+            out+="null,";
+            return;
+        }
+        out+=to_string(root->val)+",";
+        TreeToString(root->left,out);
+        TreeToString(root->right,out);
+    }
     // Decodes your encoded data to tree.
     TreeNode* deserialize(string data) {
-        vector<int> nums(0);
-        stringToVector(data,nums); 
-        if(nums.size()==0)return NULL;
-        return buildTree(nums,0);
+        int index=0;
+        return buildTree(data,index);
     }
 
-    TreeNode* buildTree(vector<int>&v,int index){
-        if(v[index]==INT_MAX)return NULL;
-        TreeNode*root=new TreeNode(v[index]);
-        if(index*2+1<v.size())root->left=buildTree(v,index*2+1);
-        if(index*2+2<v.size())root->right=buildTree(v,index*2+2);
+    TreeNode* buildTree(string&input,int&index){
+        int num=Read(input,index);
+        if(num==INT_MAX){
+            return NULL;    
+        }
+        TreeNode*root=new TreeNode(num);
+        root->left=buildTree(input,index);
+        root->right=buildTree(input,index);
         return root;
     }
-    void stringToVector(string& input,vector<int>&ans){
-        if(input.size()==2)return;// input=="[]"
-        int num=0;
-        char pre;
-        int negative=1;
-        for(char c:input){
-            if(c=='['||c==']'||c=='u'||c=='l'){
-                pre=c;
+    int Read(string&input,int& index){
+        int ans=0;
+        int sign=1;
+        for(int i=index;i<input.length();i++){
+             if(input[i]=='[')continue; 
+             if(input[i]=='n'){
+                i+=5;
+                index=i;
+                return INT_MAX;
+             } 
+             if(input[i]=='-'){
+                sign=-1;
                 continue;
-            }
-            if(c=='n'){
-                ans.push_back(INT_MAX);
-            }
-            else if(c==','){
-               if(pre!='l') ans.push_back(num*negative); 
-               num=0;
-               negative=1;
-            }else if(c=='-'){
-                negative=-1;
-            }else{
-                num*=10;
-                num+=c-'0';
-            }
-            pre=c;
+             }
+             if(input[i]==','||input[i]==']'){
+                index=i+1;
+                return ans*sign;
+             }
+             ans*=10;
+             ans+=input[i]-'0';
         }
-        ans.push_back(num*negative);
-        for(int n:ans){
-            cout<<n<<",";
-        }
-        cout<<endl;
+        return INT_MAX;
     }
+
 };
 
 // Your Codec object will be instantiated and called as such:
