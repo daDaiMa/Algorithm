@@ -7,6 +7,7 @@ public:
             int _min=heights[i]; 
             for(int j=i;j<heights.size();j++){
                _min=min(_min,heights[j]);
+               if(ans>(heights.size()-i)*_min)break;
                ans=max(ans,(j-i+1)*_min);
             }
         }
