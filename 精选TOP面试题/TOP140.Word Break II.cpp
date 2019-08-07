@@ -1,29 +1,39 @@
 class Solution {
 public:
+    unordered_map<string,vector<string>>um;
+    unordered_set<string>us;
+    vector<int>steps;
     vector<string> wordBreak(string s, vector<string>& wordDict) {
-        set<int>stepset;
-        set<string>words;
-        for(auto&w:wordDict){
-            stepset.insert(w.length());
-            words.insert(w);
+        set<int>tmps; 
+        for(string&w:wordDict){
+            tmps.insert(w.length());
+            us.insert(w);
         }
-        vector<int>steps(stepset.begin(),stepset.end());
-        vector<string>ans;
-        dfs("",s,0,ans,words,steps);
-        return ans;
+        steps.assign(tmps.begin(),tmps.end());
+        return get(s);
+        
     }
-    void dfs(string cur,string&s,int index,vector<string>&ans,set<string>&words,vector<int>&steps){
-        if(index>=s.length()){
-           ans.push_back(cur); 
-           return;
-        }
-        for(int& step:steps){
-            if(index+step>s.length())break;
-            string tmp=s.substr(index,step);
-            if(words.count(tmp)){
-                dfs(cur==""?tmp:cur+" "+tmp,s,index+step,ans,words,steps);
+    vector<string> get(string s){
+       if(s=="")return vector<string>({});
+       if(um.count(s))return um[s];
+       vector<string>ans;
+       for(auto step:steps){
+            if(step>s.length())break;
+            string prefix = s.substr(0,step);
+            if(!us.count(prefix))continue;
+            if(step==s.length()){
+                ans.push_back(prefix);
+                break;
+            }
+            auto res=get(s.substr(step));
+            if(res.size()==0)continue;
+            for(string& str:res){
+                ans.push_back(prefix+" "+str);
             }
         }
+        um[s]=ans;
+        return ans;
     }
 };
+
 
