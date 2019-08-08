@@ -10,7 +10,7 @@
 
 对于n为正数的情况，快速幂的递归实现如下
 
-```
+```go
  func fastPow(x float64, n int) float64 {
   if n == 0 {
     return 1.0
