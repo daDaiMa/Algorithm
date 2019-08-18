@@ -1,3 +1,6 @@
-# leetCode-algorithm
+# Algorithm
 
-有些题目在不同的分类中，就归类到其中一个了
+菜😂  就要多多练习
+
+
+
