@@ -2,7 +2,7 @@
 
 
 
-#### 版本1
+## 版本1
 
 ![image-20190821214334919](README.assets/image-20190821214334919.png)
 
@@ -107,4 +107,62 @@ for(int i=1;i<prices.size();i++){
 }
 
 ```
+
+
+
+
+
+## 版本2
+
+![d](README.assets/image-20190821232925800.png)
+
+
+
+状态转移方程`dp[i][0]=max(dp[i-1][1]+prices[i],dp[i-1][0])` `dp[i][1]=max(dp[i-1][0]-prices[i],dp[i-1][1]);`
+
+`dp[i][0]`表示第i天手上没有股票
+
+`dp[i][1]`表示第i天手上有股票
+
+```cpp
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(!prices.size())return 0;
+        int ans=0;
+        vector<vector<int>>dp(prices.size(),vector<int>(2,0));
+        dp[0][0]=0;
+        dp[0][1]=-prices[0];
+        for(int i=1;i<prices.size();i++){
+            dp[i][0]=max(dp[i-1][1]+prices[i],dp[i-1][0]);
+            dp[i][1]=max(dp[i-1][0]-prices[i],dp[i-1][1]);
+            ans=max(ans,dp[i][0]);
+        }
+        return ans;
+    }
+};
+```
+
+发现第i天的状态和只第i-1天有关所以可以优化空间
+
+```cpp
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        if(!prices.size())return 0;
+        int ans=0;
+        int has=-prices[0];
+        int none=0;
+        for(int i=1;i<prices.size();i++){
+            int pre_none=none;
+            none=max(has+prices[i],none);
+            has=max(pre_none-prices[i],has);
+            ans=max(ans,none);
+        }
+        return ans;
+    }
+};
+```
+
+
 
