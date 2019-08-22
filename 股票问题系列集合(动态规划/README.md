@@ -4,7 +4,7 @@
 
 ## 版本1(简单
 
-![image-20190821214334919](README.assets/image-20190821214334919.png)
+![image-20190822114432295](README.assets/image-20190822114432295.png)
 
 ```cpp
 // 这个思路好像不太像动态规划
@@ -114,9 +114,7 @@ for(int i=1;i<prices.size();i++){
 
 ## 版本2(简单
 
-![d](README.assets/image-20190821232925800.png)
-
-
+![image-20190822114508209](README.assets/image-20190822114508209.png)
 
 状态转移方程`dp[i][0]=max(dp[i-1][1]+prices[i],dp[i-1][0])` `dp[i][1]=max(dp[i-1][0]-prices[i],dp[i-1][1]);`
 
@@ -207,4 +205,105 @@ class Solution{
 ```
 
 ![image-20190822111947128](README.assets/image-20190822111947128.png)
+
+### 版本4(困难
+
+![image-20190822113841676](README.assets/image-20190822113841676.png)
+
+思路:k次和2次的想法是一样的 ，替换一下变量就行了
+
+```cpp
+class Solution{
+    public:
+        int maxProfit(int k, vector<int>& prices) {
+            if(!prices.size())return 0;
+            // 恒等式dp[i][2]=0;
+            vector<vector<int>>dp(k+1,vector<int>(2,0));
+            int ans=0;
+            for(int i=0;i<k;i++)dp[i][1]=-prices[0];
+            for(int i=1;i<prices.size();i++){
+                for(int j=k-1;j>=0;j--){
+                    dp[j][0]=max(dp[j][1]+prices[i],dp[j][0]);
+                    dp[j][1]=max(dp[j+1][0]-prices[i],dp[j][1]);
+                    ans=max(ans,dp[j][0]);
+                }
+            }
+            return ans;
+        }
+};
+```
+
+但是会出现问题 通过了209个case 还有几个case通不过😂
+
+是空间开太大了 
+
+![image-20190822113822202](README.assets/image-20190822113822202.png)
+
+空间不够了，这个非常大，然后想怎么优化空间
+
+```cpp
+for(int i=1;i<prices.size();i++){
+    for(int j=k-1;j>=0;j--){        
+      // 快看下面这俩条诶
+      // 好像dp[j][x]只和dp[j+1][x]有关诶
+      // 但是不能覆盖噢，因为外边还有一层循环呢
+      // 然而我傻到在考虑怎么覆盖
+      // 甚至写出了代码 还能通过100多个测试点。。。。
+      // 但是后来调bug的时候醒悟了
+      // 但是说不定真的有办法只是我不知道QAQ
+        dp[j][0]=max(dp[j][1]+prices[i],dp[j][0]);
+        dp[j][1]=max(dp[j+1][0]-prices[i],dp[j][1]);
+        ans=max(ans,dp[j][0]);
+    }
+}
+```
+
+然后看了别人的写法
+
+发现了一个技巧
+
+如果总共就n天 那么最多也就买卖n/2次
+
+如果k>n/2那就可以看作是不限交易次数
+
+于是问题转化了 转化成版本2😂
+
+```cpp
+// 太菜了 折腾了3小时 终于好了
+class Solution{
+    public:
+        int maxProfit(int k, vector<int>& prices) {
+            if(!prices.size()||!k)return 0;
+            if(k>prices.size()/2){
+                cout<<"shit";
+                return maxProfitUtil(prices);
+            }
+            // 恒等式dp[i][2]=0;
+            vector<vector<int>>dp(k+1,vector<int>(2,0));
+            int ans=0;
+            for(int i=0;i<k;i++)dp[i][1]=-prices[0];
+            for(int i=1;i<prices.size();i++){
+                for(int j=k-1;j>=0;j--){        
+                    dp[j][0]=max(dp[j][1]+prices[i],dp[j][0]);
+                    dp[j][1]=max(dp[j+1][0]-prices[i],dp[j][1]);
+                    ans=max(ans,dp[j][0]);
+                }
+            }
+            return ans;
+        }
+        int maxProfitUtil(vector<int>& prices) {
+            if(!prices.size())return 0;
+            int ans=0;
+            vector<vector<int>>dp(prices.size(),vector<int>(2,0));
+            dp[0][0]=0;
+            dp[0][1]=-prices[0];
+            for(int i=1;i<prices.size();i++){
+                dp[i][0]=max(dp[i-1][1]+prices[i],dp[i-1][0]);
+                dp[i][1]=max(dp[i-1][0]-prices[i],dp[i-1][1]);
+                ans=max(ans,dp[i][0]);
+            }
+            return ans;
+        }
+};
+```
 
