@@ -2,7 +2,7 @@
 
 
 
-## 版本1
+## 版本1(简单
 
 ![image-20190821214334919](README.assets/image-20190821214334919.png)
 
@@ -112,7 +112,7 @@ for(int i=1;i<prices.size();i++){
 
 
 
-## 版本2
+## 版本2(简单
 
 ![d](README.assets/image-20190821232925800.png)
 
@@ -164,5 +164,47 @@ public:
 };
 ```
 
+### 版本3(困难
 
+![image-20190822112016051](README.assets/image-20190822112016051.png)
+
+思路：
+
+`dp[i][j][0]`==第i天还有j次购买机会手中有0个股
+
+`dp[i][j][0]=max(dp[i-1][j][1]+prices[i],dp[i-1][j][0])`
+
+`dp[i][j][1]=max(dp[i-1][j+1][0]-prices[i],dp[i-1][j][1]);`
+
+化简
+
+`dp[j][0]=max(dp[j][1]+prices[i],dp[j][0]);`
+
+`dp[j][1]=max(dp[j+1][0]-prices[i],dp[j][1]);`
+
+
+
+```cpp
+class Solution{
+    public:
+    int maxProfit(vector<int>&prices){
+        if(!prices.size())return 0;
+        // 恒等式dp[i][2]=0;
+        vector<vector<int>>dp(3,vector<int>(2,0));
+        int ans=0;
+        dp[1][1]=-prices[0];
+        dp[0][1]=-prices[0]; // 这个条件一定要带上 妈的坑了我好久QAQ 😂
+        for(int i=1;i<prices.size();i++){
+            for(int j=1;j>=0;j--){
+                dp[j][0]=max(dp[j][1]+prices[i],dp[j][0]);
+                dp[j][1]=max(dp[j+1][0]-prices[i],dp[j][1]);
+                ans=max(ans,dp[j][0]);
+            }
+        }
+        return ans;
+    }
+};
+```
+
+![image-20190822111947128](README.assets/image-20190822111947128.png)
 
