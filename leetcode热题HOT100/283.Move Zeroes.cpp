@@ -2,13 +2,12 @@
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        vector<int>tmp(nums.begin(),nums.end());
-        int count=0;
-        for(int a:tmp){
-            if(a)nums[count++]=a;
+        int index=0;
+        int next=0;
+        while(next<nums.size()){
+            if(nums[next])nums[index++]=nums[next];
+            next++;
         }
-        while(count<nums.size()){
-            nums[count++]=0;
-        }
+        while(index<nums.size())nums[index++]=0;
     }
 };
