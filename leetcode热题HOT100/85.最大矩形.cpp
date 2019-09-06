@@ -16,6 +16,7 @@ public:
                 for(int j=0;j<width;j++){
                     binary[j]&=(matrix[i][j]=='1'?true:false);
                 }
+                if(max_wight*(height-h+1)<ans)break;
                 int max_wight=statistics(binary,width); 
                 int area=max_wight*(i-h+1);
                 ans=max(ans,area);
