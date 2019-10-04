@@ -65,17 +65,18 @@ public:
           uset.join(root + 3, root + len * 4);
         }
 
-        if (i - 1 >= 0) {
-          uset.join(root, root - len * 4 + 3);
-        }
+        // if (i - 1 >= 0) {
+        //  uset.join(root, root - len * 4 + 3);
+        //}
 
         if (j + 1 < len) {
           uset.join(root + 2, root + 4 + 1);
         }
 
-        if (j - 1 >= 0) {
-          uset.join(root + 1, root - 4 + 2);
-        }
+        // 去掉也能过 想想感觉其实不需要？
+        // if (j - 1 >= 0) {
+        //  uset.join(root + 1, root - 4 + 2);
+        //}
       }
     }
 
