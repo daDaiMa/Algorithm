@@ -2,30 +2,56 @@
 #define MAXN 30
 using namespace std;
 int N;
-int dis[MAXN][MAXN];
-int **dp;
-int main() {
-  if (!freopen("./input.txt", "r", stdin)) {
-    printf("shit");
-    return -1;
+double dis[MAXN][MAXN];
+double **dp;
+
+void input_point() {
+  scanf("%d", &N);
+  vector<pair<int, int> > point(N);
+  int a, b;
+  for (int i = 0; i < N; i++) {
+    scanf("%d%d", &a, &b);
+    point[i] = make_pair(a, b);
   }
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j <= i; j++) {
+      if (i == j)
+        dis[i][j] = 0;
+      else {
+        int deltaX = point[i].first - point[j].first;
+        int deltaY = point[i].second - point[j].second;
+        dis[i][j] = dis[j][i] = sqrt(deltaX * deltaX + deltaY * deltaY);
+      }
+    }
+  }
+}
+
+void input_dis() {
   scanf("%d", &N);
   for (int i = 0; i < N; i++) {
     for (int j = 0; j < N; j++) {
-      scanf("%d", &dis[i][j]);
+      scanf("%lf", &dis[i][j]);
       // 如果距离输入是负数 就表示不直接相连吧～ 那距离就设置成一个较大值
       if (dis[i][j] < 0)
-        dis[i][j] = INT_MAX / 2;
+        dis[i][j] = 0.5 * INT_MAX;
     }
   }
+}
+int main() {
+  if (!freopen("./point.txt", "r", stdin)) {
+    printf("shit");
+    return -1;
+  }
+
+  input_point();
 
   int V = 1 << (N - 1);
 
-  dp = new int *[V + 1];
+  dp = new double *[V + 1];
   for (int i = 0; i <= V; i++) {
-    dp[i] = new int[N + 1];
+    dp[i] = new double[N + 1];
     for (int j = 0; j <= N; j++)
-      dp[i][j] = INT_MAX;
+      dp[i][j] = 1.0 * INT_MAX;
   }
 
   // 0 0 0 0
@@ -49,11 +75,11 @@ int main() {
     }
   }
 
-  int ans = INT_MAX;
+  double ans = 1.0 * INT_MAX;
   for (int i = 0; i < N; i++)
     ans = min(ans, dp[V - 1][i] + dis[i][0]);
 
-  printf("the ans is %d", ans);
+  printf("the ans is %lf", ans);
 
   return 0;
 }
