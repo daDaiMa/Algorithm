@@ -38,23 +38,23 @@ struct Node {
     }
     NewMax = -1;
   }
-  void update(int l, int r, int max) {
+  void update(int l, int r, int newMax) {
     if (left == l && r == right) {
-      Max = max;
-      NewMax = max;
+      Max = newMax;
+      NewMax = newMax;
       return;
     }
     // push_down();
     int mid = (left + right) / 2;
     if (r <= mid)
-      ls->update(l, r, max);
+      ls->update(l, r, newMax);
     else if (l > mid)
-      rs->update(l, r, max);
+      rs->update(l, r, newMax);
     else {
-      ls->update(l, mid, max);
-      rs->update(mid + 1, r, max);
+      ls->update(l, mid, newMax);
+      rs->update(mid + 1, r, newMax);
     }
-    Max = max;
+    Max = max(Max, newMax);
   }
 
   int query(int l, int r) {
