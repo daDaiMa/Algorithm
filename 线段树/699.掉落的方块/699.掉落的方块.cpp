@@ -3,13 +3,14 @@
 using namespace std;
 
 struct Node {
-  int left, right, sum, add;
+  int left, right, Max, NewMax;
   Node *ls, *rs;
-  Node(int l, int r) : left(l), right(r) { sum = add = 0, ls = rs = NULL; }
+  Node(int l, int r) : left(l), right(r) { Max = NewMax = 0, ls = rs = NULL; }
 
+  /*
   void update(int l, int r, int max) {
     if (left == right) {
-      sum = max;
+      Max= max;
       return;
     }
     int mid = (left + right) / 2;
@@ -21,12 +22,45 @@ struct Node {
       ls->update(l, mid, max);
       rs->update(mid + 1, r, max);
     }
-    sum = max;
+    Max= max;
+  }
+  */
+  void push_down() {
+    if (NewMax <= 0)
+      return;
+    if (ls) {
+      ls->Max = NewMax;
+      ls->NewMax = NewMax;
+    }
+    if (rs) {
+      rs->Max = NewMax;
+      rs->NewMax = NewMax;
+    }
+    NewMax = -1;
+  }
+  void update(int l, int r, int max) {
+    if (left == l && r == right) {
+      Max = max;
+      NewMax = max;
+      return;
+    }
+    // push_down();
+    int mid = (left + right) / 2;
+    if (r <= mid)
+      ls->update(l, r, max);
+    else if (l > mid)
+      rs->update(l, r, max);
+    else {
+      ls->update(l, mid, max);
+      rs->update(mid + 1, r, max);
+    }
+    Max = max;
   }
 
   int query(int l, int r) {
     if (l <= left && r >= right)
-      return sum;
+      return Max;
+    push_down();
     int mid = (right + left) / 2;
     if (r <= mid)
       return ls->query(l, r);
