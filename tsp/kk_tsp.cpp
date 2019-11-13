@@ -44,6 +44,7 @@ int main() {
   }
 
   input_point();
+  //input_dis();
 
   int V = 1 << (N - 1);
 
@@ -54,7 +55,9 @@ int main() {
       dp[i][j] = 1.0 * INT_MAX;
   }
 
-  // 0 0 0 0
+  map<pair<int, int>, int> path; // pair<set,i> pre step of i is j
+
+  // 0 0 0 0            从 0 出发
   dp[0][0] = 0;
   for (int v = 0; v < V; v++) {
     for (int c = 1; c < N; c++) {
@@ -64,22 +67,48 @@ int main() {
       if (!v) {
         int new_v = v | (1 << (c - 1));
         dp[new_v][c] = dis[0][c];
+        path[make_pair(new_v, c)] = c;
         continue;
       }
       for (int k = 1; k < N; k++) {
         if ((1 << (k - 1)) & v) {
           int new_v = v | (1 << (c - 1));
           dp[new_v][c] = min(dp[new_v][c], dp[v][k] + dis[k][c]);
+          if (dp[new_v][c] == dp[v][k] + dis[k][c]) {
+            path[make_pair(new_v, c)] = k;
+          }
         }
       }
     }
   }
 
   double ans = 1.0 * INT_MAX;
-  for (int i = 0; i < N; i++)
-    ans = min(ans, dp[V - 1][i] + dis[i][0]);
+  int ans_index = 1;
+  for (int i = 1; i < N; i++) {
+    if (ans > dp[V - 1][i]) {
+      ans = dp[V - 1][i];
+      ans_index = i;
+    }
+  }
 
   printf("the ans is %lf", ans);
+  // return 0;
+  // 计算路径
+  int v = V - 1;
+  int cur = ans_index; // 从 0 - cur 的路径
+  stack<int> p;
+  cout << endl;
+  while (v) {
+    p.push(cur);
+    int pre = path[make_pair(v, cur)];
+    v &= ~(1 << (cur - 1));
+    cur = pre;
+  }
+  printf("0");
+  while (!p.empty()) {
+    printf("==>%d", p.top());
+    p.pop();
+  }
 
   return 0;
 }
