@@ -11,21 +11,28 @@ void read() {
   cost = new int[n + 1];
   val = new int[n + 1];
   DP = new int *[n + 1];
+  DP[0] = new int[V + 1];
+  memset(DP[0], 0, sizeof(int) * (n + 1));
   for (int i = 1; i <= n; i++) {
     cin >> cost[i] >> val[i];
-    DP[i] = new int[n + 1];
+    DP[i] = new int[V + 1];
     memset(DP[i], 0, sizeof(int) * (n + 1));
   }
 }
 
-inline int dp(int i, int v) { return v < INT_MIN ? 0 : DP[i][v]; }
+inline int dp(int i, int v) { return v < 0 ? INT_MIN : DP[i][v]; }
 
 void solve() {
   for (int i = 1; i <= n; i++)
     for (int v = 0; v <= V; v++) {
-      DP[i][v] = max(DP[i - 1][v], dp(i, v - cost[i]) + val[i]);
+      if (v < cost[i])
+        DP[i][v] = DP[i - 1][v];
+      else
+        DP[i][v] = DP[i - 1][v] > DP[i][v - cost[i]] + val[i]
+                       ? DP[i - 1][v]
+                       : DP[i][v - cost[i]] + val[i];
     }
-  printf("the ans is %d", DP[n][V]);
+  printf("the ans is %d\n", DP[n][V]);
 }
 
 void statistics() {
